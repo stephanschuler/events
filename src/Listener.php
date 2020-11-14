@@ -5,5 +5,5 @@ namespace StephanSchuler\Events;
 
 interface Listener
 {
-    public function __invoke(Event $data): void;
+    public function consumeEvent(Event $event): void;
 }

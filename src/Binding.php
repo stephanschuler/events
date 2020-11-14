@@ -3,25 +3,22 @@ declare(strict_types=1);
 
 namespace StephanSchuler\Events;
 
+use StephanSchuler\Events\Modification\Modifier;
+
 class Binding
 {
     private $consumer;
-    private $condition;
+    private $modifier;
 
-    public function __construct(Listener $consumer, callable $condition)
+    public function __construct(Listener $consumer, Modifier $modifier)
     {
         $this->consumer = $consumer;
-        $this->condition = $condition;
+        $this->modifier = $modifier;
     }
 
-    public static function create(Listener $consumer): self
+    public static function create(Listener $consumer, Modifier $transformation): self
     {
-        return new static($consumer, self::always());
-    }
-
-    public function withCondition(callable $condition): self
-    {
-        return new static($this->consumer, $condition);
+        return new static($consumer, $transformation);
     }
 
     public function getListener(): ?Listener
@@ -29,20 +26,8 @@ class Binding
         return $this->consumer;
     }
 
-    public function getCondition(): callable
+    public function getModifier(): Modifier
     {
-        return $this->condition;
-    }
-
-    public function matchesCondition(Event $event): bool
-    {
-        return ($this->condition)($event);
-    }
-
-    private static function always(): callable
-    {
-        return static function () {
-            return true;
-        };
+        return $this->modifier;
     }
 }

@@ -17,8 +17,8 @@ class ClosureBasedListener implements Listener
         return new static($consume);
     }
 
-    public function __invoke(Event $data): void
+    public function consumeEvent(Event $event): void
     {
-        ($this->consume)($data);
+        ($this->consume)($event);
     }
 }
