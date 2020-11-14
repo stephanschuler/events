@@ -22,7 +22,7 @@ class EventEmitter
         return new self();
     }
 
-    public function dispatch($event): void
+    public function dispatch(Event $event): void
     {
         $listeners = [];
 

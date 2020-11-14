@@ -34,7 +34,7 @@ class Binding
         return $this->condition;
     }
 
-    public function matchesCondition($event): bool
+    public function matchesCondition(Event $event): bool
     {
         return ($this->condition)($event);
     }

@@ -16,7 +16,7 @@ class Events
 
     public static function create(EventEmitter $eventEmitter): self
     {
-        $always = static function ($data) {
+        $always = static function (Event $data) {
             return true;
         };
         return new static($eventEmitter, $always);
@@ -25,7 +25,7 @@ class Events
     public function filter(callable $condition): self
     {
         $preCondition = $this->condition;
-        $filter = static function ($data) use ($preCondition, $condition) {
+        $filter = static function (Event $data) use ($preCondition, $condition) {
             return $preCondition($data) && $condition($data);
         };
         return new static($this->eventEmitter, $filter);

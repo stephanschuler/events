@@ -12,12 +12,12 @@ class ClosureBasedListener implements Listener
         $this->consume = $consume;
     }
 
-    public static function create($consume): self
+    public static function create(callable $consume): self
     {
         return new static($consume);
     }
 
-    public function __invoke($data): void
+    public function __invoke(Event $data): void
     {
         ($this->consume)($data);
     }

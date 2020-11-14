@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace StephanSchuler\Events;
 
-interface Listener
+interface Event
 {
-    public function __invoke(Event $data): void;
 }
