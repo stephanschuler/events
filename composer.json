@@ -1,5 +1,5 @@
 {
-  "name": "stephanschuler/telegram-bot-channel",
+  "name": "stephanschuler/events",
   "description": "Do not use in production. This is just an experiment for now.",
   "type": "library",
   "license": "MIT",
@@ -10,14 +10,11 @@
     }
   ],
   "require": {
-    "php": "~7.4",
-    "ext-json": "*",
-    "psr/http-message": "^1.0",
-    "stephanschuler/telegram-bot-api": "dev-master"
+    "php": "~7.4"
   },
   "autoload": {
     "psr-4": {
-      "StephanSchuler\\TelegramBot\\Channel\\": "src"
+      "StephanSchuler\\Events\\": "src"
     }
   }
 }

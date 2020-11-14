@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace StephanSchuler\TelegramBot\Channel\Events;
+namespace StephanSchuler\Events;
 
 use function assert;
 use function spl_object_id;

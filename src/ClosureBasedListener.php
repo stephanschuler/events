@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace StephanSchuler\TelegramBot\Channel\Events;
+namespace StephanSchuler\Events;
 
 class ClosureBasedListener implements Listener
 {
