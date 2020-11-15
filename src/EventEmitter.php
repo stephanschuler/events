@@ -26,8 +26,8 @@ class EventEmitter
     public function dispatch(Event $event): void
     {
 
-        $transformations = self::getTransformationsAndCorrespondingListeners(... $this->bindings);
-        $events = self::getEventsAndCorrespondingListeners($event, ... $transformations);
+        $modifiers = self::getModifiersAndCorrespondingListeners(... $this->bindings);
+        $events = self::getEventsAndCorrespondingListeners($event, ... $modifiers);
 
         foreach ($events as ['listeners' => $listeners, 'event' => $transformedEvent]) {
             assert($transformedEvent instanceof Event);
@@ -43,27 +43,27 @@ class EventEmitter
         return Events::create($this);
     }
 
-    public function register(Listener $listener, Modifier $transformation): callable
+    public function register(Listener $listener, Modifier $modifier): callable
     {
-        $binding = Binding::create($listener, $transformation);
+        $binding = Binding::create($listener, $modifier);
         $this->bindings[] = $binding;
-        return function () use ($listener, $transformation) {
-            $this->unregister($listener, $transformation);
+        return function () use ($listener, $modifier) {
+            $this->unregister($listener, $modifier);
         };
     }
 
-    public function unregister(Listener $listener, Modifier $condition = null): void
+    public function unregister(Listener $listener, Modifier $modifier = null): void
     {
         $this->bindings = array_filter(
             $this->bindings,
-            static function (Binding $binding) use ($listener, $condition) {
+            static function (Binding $binding) use ($listener, $modifier) {
                 $delinquent = $binding->getListener();
-                $delinquentCondition = $binding->getModifier();
+                $delinquentModifier = $binding->getModifier();
                 $bindingIsExpired = !($delinquent instanceof Listener);
                 switch (true) {
                     case ($bindingIsExpired):
-                    case ($listener === $delinquent && $condition === $delinquentCondition):
-                    case ($listener === $delinquent && $condition === null):
+                    case ($listener === $delinquent && $modifier === $delinquentModifier):
+                    case ($listener === $delinquent && $modifier === null):
                         return self::DROP;
                 }
                 return self::KEEP;
@@ -71,9 +71,9 @@ class EventEmitter
         );
     }
 
-    private static function getTransformationsAndCorrespondingListeners(Binding ...$bindings)
+    private static function getModifiersAndCorrespondingListeners(Binding ...$bindings)
     {
-        $transformations = [];
+        $modifiers = [];
 
         foreach ($bindings as $binding) {
             assert($binding instanceof Binding);
@@ -81,26 +81,26 @@ class EventEmitter
             if (!($listener instanceof Listener)) {
                 continue;
             }
-            $transformation = $binding->getModifier();
-            $transformations[spl_object_id($transformation)] =
-                $transformations[spl_object_id($transformation)]
+            $modifier = $binding->getModifier();
+            $modifiers[spl_object_id($modifier)] =
+                $modifiers[spl_object_id($modifier)]
                 ?? [
-                    'transformation' => $transformation,
+                    'modifier' => $modifier,
                     'listeners' => []
                 ];
-            $transformations[spl_object_id($transformation)]['listeners'][spl_object_id($listener)] = $listener;
+            $modifiers[spl_object_id($modifier)]['listeners'][spl_object_id($listener)] = $listener;
         }
 
-        return array_values($transformations);
+        return array_values($modifiers);
     }
 
-    private static function getEventsAndCorrespondingListeners(Event $event, ...$transformations)
+    private static function getEventsAndCorrespondingListeners(Event $event, ...$modifiers)
     {
         $events = [];
 
-        foreach ($transformations as ['listeners' => $listeners, 'transformation' => $transformation]) {
-            assert($transformation instanceof Modifier);
-            $transformedEvent = $transformation->transform($event);
+        foreach ($modifiers as ['listeners' => $listeners, 'modifier' => $modifier]) {
+            assert($modifier instanceof Modifier);
+            $transformedEvent = $modifier->transform($event);
             if (!$transformedEvent) {
                 continue;
             }

@@ -11,12 +11,12 @@ use StephanSchuler\Events\Modification\Modifier;
 class Events
 {
     private $eventEmitter;
-    private $transformation;
+    private $modifier;
 
-    private function __construct(EventEmitter $eventEmitter, Modifier $transformation)
+    private function __construct(EventEmitter $eventEmitter, Modifier $modifier)
     {
         $this->eventEmitter = $eventEmitter;
-        $this->transformation = $transformation;
+        $this->modifier = $modifier;
     }
 
     public static function create(EventEmitter $eventEmitter): self
@@ -36,17 +36,17 @@ class Events
 
     public function register(Listener $listener): callable
     {
-        return $this->eventEmitter->register($listener, $this->transformation);
+        return $this->eventEmitter->register($listener, $this->modifier);
     }
 
-    public function unregister(Listener $listener, Modifier $condition = null): void
+    public function unregister(Listener $listener, Modifier $modifier = null): void
     {
-        $this->eventEmitter->unregister($listener, $condition);
+        $this->eventEmitter->unregister($listener, $modifier);
     }
 
-    protected function modify(ModificationStep $modifier): self
+    protected function modify(ModificationStep $modificationStep): self
     {
-        $transformation = $this->transformation->withStep($modifier);
-        return new static($this->eventEmitter, $transformation);
+        $modifier = $this->modifier->withStep($modificationStep);
+        return new static($this->eventEmitter, $modifier);
     }
 }

@@ -16,9 +16,9 @@ class Binding
         $this->modifier = $modifier;
     }
 
-    public static function create(Listener $consumer, Modifier $transformation): self
+    public static function create(Listener $consumer, Modifier $modifier): self
     {
-        return new static($consumer, $transformation);
+        return new static($consumer, $modifier);
     }
 
     public function getListener(): ?Listener
